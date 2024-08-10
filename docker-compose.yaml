@@ -1,0 +1,33 @@
+services:
+  prasorganic-cart-service-postgres:
+    container_name: prasorganic-cart-service-postgres
+    image: postgres:16.0
+    ports:
+      - 5436:5432
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - type: volume
+        source: prasorganic-cart-service-postgres-data
+        target: /var/lib/postgresql/data
+      - type: bind
+        source: ./doc/database/postgresql/postgresql.conf
+        target: /etc/postgresql/postgresql.conf
+    networks:
+      - prasorganic-network
+      - prasorganic-cart-service-network
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+    restart: on-failure
+
+volumes:
+  prasorganic-cart-service-postgres-data:
+    name: prasorganic-cart-service-postgres-data
+
+networks:
+  prasorganic-cart-service-network:
+    name: prasorganic-cart-service-network
+    driver: bridge
+  prasorganic-network:
+    name: prasorganic-network
+    external: true
