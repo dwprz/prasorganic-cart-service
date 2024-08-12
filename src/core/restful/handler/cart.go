@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"strconv"
+
 	"github.com/dwprz/prasorganic-cart-service/src/interface/service"
 	"github.com/dwprz/prasorganic-cart-service/src/model/dto"
 	"github.com/gofiber/fiber/v2"
@@ -33,4 +35,24 @@ func (h *Cart) Create(c *fiber.Ctx) error {
 	}
 
 	return c.Status(201).JSON(fiber.Map{"data": "created item cart successfully"})
+}
+
+func (h *Cart) GetByCurrentUser(c *fiber.Ctx) error {
+	req := new(dto.GetCartByCurrentUserReq)
+
+	page, err := strconv.Atoi(c.Query("page", "1"))
+	if err != nil {
+		return err
+	}
+	req.Page = page
+
+	userData := c.Locals("user_data").(jwt.MapClaims)
+	req.UserId = userData["user_id"].(string)
+
+	res, err := h.cartService.GetByCurentUser(c.Context(), req)
+	if err != nil {
+		return err
+	}
+
+	return c.Status(201).JSON(fiber.Map{"data": res.Data, "paging": res.Paging})
 }

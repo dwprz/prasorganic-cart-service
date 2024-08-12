@@ -9,4 +9,5 @@ import (
 func Create(app *fiber.App, h *handler.Cart, m *middleware.Middleware) {
 	// all
 	app.Add("POST", "/api/carts/items", m.VerifyJwt, h.Create)
+	app.Add("GET", "/api/carts/users/current", m.VerifyJwt, h.GetByCurrentUser)
 }

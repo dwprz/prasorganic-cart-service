@@ -10,7 +10,16 @@ var Logger = logrus.New()
 func init() {
 	appStatus := os.Getenv("PRASORGANIC_APP_STATUS")
 
-	Logger.SetFormatter(&customJSONFormatter{})
+	Logger.SetFormatter(&StackFormatter{
+		logrus.TextFormatter{
+			DisableColors:    false,
+			DisableTimestamp: false,
+			FullTimestamp:    true,
+			DisableQuote:     true,
+		},
+	})
+
+	Logger.SetLevel(logrus.InfoLevel)
 
 	if appStatus == "DEVELOPMENT" {
 		return
@@ -28,5 +37,4 @@ func init() {
 	}
 
 	Logger.Out = file
-	// Logger.SetLevel(logrus.InfoLevel)
 }

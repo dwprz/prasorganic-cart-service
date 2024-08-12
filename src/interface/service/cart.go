@@ -7,5 +7,6 @@ import (
 )
 
 type Cart interface {
-	Create(ctx context.Context, data *dto.CreateCartReq) (error) 
+	Create(ctx context.Context, data *dto.CreateCartReq) error
+	GetByCurentUser(ctx context.Context, data *dto.GetCartByCurrentUserReq) (*dto.DataWithPaging[[]*dto.ProductCartRes], error)
 }
