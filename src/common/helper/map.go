@@ -16,7 +16,6 @@ func MapCartToProductCartRes(cart []entity.Cart, products []*pb.ProductCart) []*
 	for _, c := range cart {
 		if product, exists := productMap[c.ProductId]; exists {
 			res := &dto.ProductCartRes{
-				CartItemId:  c.CartItemId,
 				UserId:      c.UserId,
 				ProductId:   c.ProductId,
 				Quantity:    c.Quantity,

@@ -79,3 +79,17 @@ func (c *CartImpl) CountByUserId(ctx context.Context, userId string) (totalCart 
 	err = c.db.WithContext(ctx).Table("carts").Where("user_id = ?", userId).Count(&totalCart).Error
 	return totalCart, err
 }
+
+func (c *CartImpl) DeleteItem(ctx context.Context, data *dto.DeleteItemCartReq) error {
+
+	res := c.db.WithContext(ctx).Where("user_id = ? AND product_id = ?", data.UserId, data.ProductId).Delete(&entity.Cart{})
+	if res.Error != nil {
+		return res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		return &errors.Response{HttpCode: 404, Message: "cart not found"}
+	}
+
+	return res.Error
+}

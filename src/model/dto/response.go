@@ -24,7 +24,6 @@ type CartWithCountRes struct {
 }
 
 type ProductCartRes struct {
-	CartItemId  uint32  `json:"cart_item_id"`
 	UserId      string  `json:"user_id"`
 	ProductId   uint32  `json:"product_id"`
 	Quantity    uint32  `json:"quantity"`

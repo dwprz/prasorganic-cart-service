@@ -66,3 +66,12 @@ func (c *CartImpl) GetByCurentUser(ctx context.Context, data *dto.GetCartByCurre
 
 	return helper.FormatPagedData(productsCart, res.TotalCart, data.Page, limit), nil
 }
+
+func (c *CartImpl) DeleteItem(ctx context.Context, data *dto.DeleteItemCartReq) error {
+	if err := c.validate.Struct(data); err != nil {
+		return err
+	}
+
+	err := c.cartRepo.DeleteItem(ctx, data)
+	return err
+}

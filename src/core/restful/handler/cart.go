@@ -56,3 +56,24 @@ func (h *Cart) GetByCurrentUser(c *fiber.Ctx) error {
 
 	return c.Status(201).JSON(fiber.Map{"data": res.Data, "paging": res.Paging})
 }
+
+func (h *Cart) DeleteItem(c *fiber.Ctx) error {
+	req := new(dto.DeleteItemCartReq)
+
+	productId, err := strconv.Atoi(c.Params("productId"))
+	if err != nil {
+		return err
+	}
+	
+	req.ProductId = uint32(productId)
+
+	userData := c.Locals("user_data").(jwt.MapClaims)
+	req.UserId = userData["user_id"].(string)
+
+	err = h.cartService.DeleteItem(c.Context(), req)
+	if err != nil {
+		return err
+	}
+
+	return c.Status(201).JSON(fiber.Map{"data": "deleted item cart successfully"})
+}
