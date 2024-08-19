@@ -11,7 +11,6 @@ import (
 	"github.com/dwprz/prasorganic-cart-service/src/core/restful/handler"
 	"github.com/dwprz/prasorganic-cart-service/src/core/restful/middleware"
 	"github.com/dwprz/prasorganic-cart-service/src/core/restful/server"
-	"github.com/dwprz/prasorganic-cart-service/src/infrastructure/cbreaker"
 	"github.com/dwprz/prasorganic-cart-service/src/infrastructure/database"
 	"github.com/dwprz/prasorganic-cart-service/src/repository"
 	"github.com/dwprz/prasorganic-cart-service/src/service"
@@ -35,10 +34,8 @@ func main() {
 	validate := validator.New()
 	postgresDB := database.NewPostgres()
 
-	cbreaker := cbreaker.New()
 	unaryRequestInterceptor := interceptor.NewUnaryRequest()
-
-	productGrpcDelivery, productGrpcConn := delivery.NewProductGrpc(cbreaker.ProductGrpc, unaryRequestInterceptor)
+	productGrpcDelivery, productGrpcConn := delivery.NewProductGrpc(unaryRequestInterceptor)
 
 	cartRepository := repository.NewCart(postgresDB)
 	grpcClient := client.NewGrpc(productGrpcDelivery, productGrpcConn)

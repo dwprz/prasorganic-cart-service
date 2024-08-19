@@ -9,9 +9,11 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func setupForProductGrpc() *gobreaker.CircuitBreaker[any] {
+var ProductGrpc *gobreaker.CircuitBreaker[any]
+
+func init() {
 	settings := gobreaker.Settings{
-		Name:        "product-grpc-client-circuit-breaker",
+		Name:        "product-grpc",
 		MaxRequests: 3,
 		Interval:    1 * time.Minute,
 		Timeout:     15 * time.Second,
@@ -50,6 +52,5 @@ func setupForProductGrpc() *gobreaker.CircuitBreaker[any] {
 		},
 	}
 
-	cbreaker := gobreaker.NewCircuitBreaker[any](settings)
-	return cbreaker
+	ProductGrpc = gobreaker.NewCircuitBreaker[any](settings)
 }
