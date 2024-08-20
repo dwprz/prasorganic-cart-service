@@ -51,7 +51,7 @@ func (p *ProductGrpcImpl) FindManyByIds(ctx context.Context, productIds []uint32
 		return nil, err
 	}
 
-	products, ok := res.(*pb.ProductsCartResponse)
+	products, ok := res.(*pb.ProductsCartRes)
 	if !ok {
 		return nil, fmt.Errorf("client.CartGrpcImpl/FindManyByIds | unexpected type: %T", res)
 	}
