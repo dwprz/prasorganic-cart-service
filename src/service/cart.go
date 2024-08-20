@@ -6,28 +6,26 @@ import (
 	"github.com/dwprz/prasorganic-cart-service/src/common/errors"
 	"github.com/dwprz/prasorganic-cart-service/src/common/helper"
 	"github.com/dwprz/prasorganic-cart-service/src/core/grpc/client"
+	v "github.com/dwprz/prasorganic-cart-service/src/infrastructure/validator"
 	"github.com/dwprz/prasorganic-cart-service/src/interface/repository"
 	"github.com/dwprz/prasorganic-cart-service/src/interface/service"
 	"github.com/dwprz/prasorganic-cart-service/src/model/dto"
-	"github.com/go-playground/validator/v10"
 )
 
 type CartImpl struct {
 	cartRepo   repository.Cart
 	grpcClient *client.Grpc
-	validate   *validator.Validate
 }
 
-func NewCart(cr repository.Cart, gc *client.Grpc, v *validator.Validate) service.Cart {
+func NewCart(cr repository.Cart, gc *client.Grpc) service.Cart {
 	return &CartImpl{
 		cartRepo:   cr,
 		grpcClient: gc,
-		validate:   v,
 	}
 }
 
 func (c *CartImpl) Create(ctx context.Context, data *dto.CreateCartReq) error {
-	if err := c.validate.Struct(data); err != nil {
+	if err := v.Validate.Struct(data); err != nil {
 		return err
 	}
 
@@ -45,7 +43,7 @@ func (c *CartImpl) Create(ctx context.Context, data *dto.CreateCartReq) error {
 }
 
 func (c *CartImpl) GetByCurentUser(ctx context.Context, data *dto.GetCartByCurrentUserReq) (*dto.DataWithPaging[[]*dto.ProductCartRes], error) {
-	if err := c.validate.Struct(data); err != nil {
+	if err := v.Validate.Struct(data); err != nil {
 		return nil, err
 	}
 
@@ -68,7 +66,7 @@ func (c *CartImpl) GetByCurentUser(ctx context.Context, data *dto.GetCartByCurre
 }
 
 func (c *CartImpl) DeleteItem(ctx context.Context, data *dto.DeleteItemCartReq) error {
-	if err := c.validate.Struct(data); err != nil {
+	if err := v.Validate.Struct(data); err != nil {
 		return err
 	}
 

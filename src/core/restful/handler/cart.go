@@ -9,17 +9,17 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type Cart struct {
+type CartRESTful struct {
 	cartService service.Cart
 }
 
-func NewCart(cs service.Cart) *Cart {
-	return &Cart{
+func NewCartRESTful(cs service.Cart) *CartRESTful {
+	return &CartRESTful{
 		cartService: cs,
 	}
 }
 
-func (h *Cart) Create(c *fiber.Ctx) error {
+func (h *CartRESTful) Create(c *fiber.Ctx) error {
 	req := new(dto.CreateCartReq)
 
 	if err := c.BodyParser(req); err != nil {
@@ -37,7 +37,7 @@ func (h *Cart) Create(c *fiber.Ctx) error {
 	return c.Status(201).JSON(fiber.Map{"data": "created item cart successfully"})
 }
 
-func (h *Cart) GetByCurrentUser(c *fiber.Ctx) error {
+func (h *CartRESTful) GetByCurrentUser(c *fiber.Ctx) error {
 	req := new(dto.GetCartByCurrentUserReq)
 
 	page, err := strconv.Atoi(c.Query("page", "1"))
@@ -57,14 +57,14 @@ func (h *Cart) GetByCurrentUser(c *fiber.Ctx) error {
 	return c.Status(201).JSON(fiber.Map{"data": res.Data, "paging": res.Paging})
 }
 
-func (h *Cart) DeleteItem(c *fiber.Ctx) error {
+func (h *CartRESTful) DeleteItem(c *fiber.Ctx) error {
 	req := new(dto.DeleteItemCartReq)
 
 	productId, err := strconv.Atoi(c.Params("productId"))
 	if err != nil {
 		return err
 	}
-	
+
 	req.ProductId = uint32(productId)
 
 	userData := c.Locals("user_data").(jwt.MapClaims)

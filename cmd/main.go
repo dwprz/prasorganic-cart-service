@@ -14,7 +14,6 @@ import (
 	"github.com/dwprz/prasorganic-cart-service/src/infrastructure/database"
 	"github.com/dwprz/prasorganic-cart-service/src/repository"
 	"github.com/dwprz/prasorganic-cart-service/src/service"
-	"github.com/go-playground/validator/v10"
 )
 
 func handleCloseApp(closeCH chan struct{}) {
@@ -31,7 +30,6 @@ func main() {
 	closeCH := make(chan struct{})
 	handleCloseApp(closeCH)
 
-	validate := validator.New()
 	postgresDB := database.NewPostgres()
 
 	unaryRequestInterceptor := interceptor.NewUnaryRequest()
@@ -41,9 +39,9 @@ func main() {
 	grpcClient := client.NewGrpc(productGrpcDelivery, productGrpcConn)
 	defer grpcClient.Close()
 
-	cartService := service.NewCart(cartRepository, grpcClient, validate)
+	cartService := service.NewCart(cartRepository, grpcClient)
 
-	cartRestfulHandler := handler.NewCart(cartService)
+	cartRestfulHandler := handler.NewCartRESTful(cartService)
 	middleware := middleware.New()
 
 	restfulServer := server.New(cartRestfulHandler, middleware)

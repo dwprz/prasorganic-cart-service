@@ -3,7 +3,7 @@ package errors
 import "google.golang.org/grpc/codes"
 
 type Response struct {
-	HttpCode uint
+	HttpCode int
 	GrpcCode codes.Code
 	Message  string
 }
