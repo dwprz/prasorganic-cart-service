@@ -1,0 +1,8 @@
+entity "carts" as Cart {
+    *user_id : VARCHAR(100) <<nanoid>> <<PK>>
+    *product_id : INTEGER <<PK>>
+    --
+    quantity: INTEGER  <<not null>>
+}
+
+@enduml
