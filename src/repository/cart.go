@@ -2,9 +2,9 @@ package repository
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/dwprz/prasorganic-cart-service/src/common/errors"
+	"github.com/dwprz/prasorganic-cart-service/src/common/helper"
 	"github.com/dwprz/prasorganic-cart-service/src/interface/repository"
 	"github.com/dwprz/prasorganic-cart-service/src/model/dto"
 	"github.com/dwprz/prasorganic-cart-service/src/model/entity"
@@ -33,11 +33,11 @@ func (c *CartImpl) Create(ctx context.Context, data *dto.CreateCartReq) error {
 }
 
 func (c *CartImpl) FindManyByUserId(ctx context.Context, userId string, limit, offset int) (*dto.CartWithCountRes, error) {
-	queryRes := new(dto.CartQueryRes)
+	var queryRes []*entity.CartQueryRes
 
 	query := `
 	WITH cte_total_cart AS (
-		SELECT COUNT(*) FROM carts WHERE user_id = $1
+		SELECT COUNT(*) AS total_cart FROM carts WHERE user_id = $1
 	),
 	cte_cart AS (
 		SELECT 
@@ -50,27 +50,22 @@ func (c *CartImpl) FindManyByUserId(ctx context.Context, userId string, limit, o
 			user_id DESC
 		LIMIT $2 OFFSET $3
 	)
-	SELECT
-		(SELECT * FROM cte_total_cart) AS total_cart,
-		(SELECT json_agg(row_to_json(cte_cart.*)) FROM cte_cart) AS cart;
+	SELECT ctc.total_cart, cc.* FROM cte_total_cart AS ctc CROSS JOIN cte_cart AS cc;
 	`
 
-	if err := c.db.WithContext(ctx).Raw(query, userId, limit, offset).Scan(queryRes).Error; err != nil {
+	if err := c.db.WithContext(ctx).Raw(query, userId, limit, offset).Scan(&queryRes).Error; err != nil {
 		return nil, err
 	}
 
-	if len(queryRes.Cart) == 0 {
+	if len(queryRes) == 0 {
 		return nil, &errors.Response{HttpCode: 404, Message: "cart not found"}
 	}
 
-	var cart []entity.Cart
-	if err := json.Unmarshal(queryRes.Cart, &cart); err != nil {
-		return nil, err
-	}
+	cart, total := helper.MapCartQueryToEntities(queryRes)
 
 	return &dto.CartWithCountRes{
 		Cart:      cart,
-		TotalCart: queryRes.TotalCart,
+		TotalCart: total,
 	}, nil
 }
 

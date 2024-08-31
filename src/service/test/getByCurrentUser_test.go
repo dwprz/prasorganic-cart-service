@@ -46,7 +46,7 @@ func (g *GetByCurrentUserTestSuite) Test_Success() {
 	}
 
 	cart := &dto.CartWithCountRes{
-		Cart: []entity.Cart{
+		Cart: []*entity.Cart{
 			{UserId: "hyfa_5Sq7nQcaY6ACksXP", ProductId: 10, Quantity: 5},
 			{UserId: "hyfa_5Sq7nQcaY6ACksXP", ProductId: 20, Quantity: 10},
 		},

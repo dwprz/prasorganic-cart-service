@@ -6,7 +6,7 @@ import (
 	pb "github.com/dwprz/prasorganic-proto/protogen/product"
 )
 
-func MapCartToProductCartRes(cart []entity.Cart, products []*pb.ProductCart) []*dto.ProductCartRes {
+func MapCartToProductCartRes(cart []*entity.Cart, products []*pb.ProductCart) []*dto.ProductCartRes {
 	productMap := make(map[uint32]*pb.ProductCart)
 	for _, product := range products {
 		productMap[product.ProductId] = product
@@ -34,4 +34,16 @@ func MapCartToProductCartRes(cart []entity.Cart, products []*pb.ProductCart) []*
 	}
 
 	return result
+}
+
+func MapCartQueryToEntities(data []*entity.CartQueryRes) (carts []*entity.Cart, totalCart int) {
+    for _, item := range data {
+        carts = append(carts, &entity.Cart{
+            UserId:    item.UserId,
+            ProductId: item.ProductId,
+            Quantity:  item.Quantity,
+        })
+    }
+
+    return carts, data[0].TotalCart
 }

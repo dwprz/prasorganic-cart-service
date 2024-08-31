@@ -13,14 +13,9 @@ type DataWithPaging[T any] struct {
 	Paging *Paging `json:"paging"`
 }
 
-type CartQueryRes struct {
-	Cart      []byte `json:"cart"`
-	TotalCart int    `json:"total_cart"`
-}
-
 type CartWithCountRes struct {
-	Cart      []entity.Cart `json:"cart"`
-	TotalCart int           `json:"total_cart"`
+	Cart      []*entity.Cart `json:"cart"`
+	TotalCart int            `json:"total_cart"`
 }
 
 type ProductCartRes struct {
