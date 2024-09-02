@@ -36,3 +36,15 @@ func NewPostgres() *gorm.DB {
 
 	return db
 }
+
+func ClosePostgres(db *gorm.DB) {
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Logger.WithFields(logrus.Fields{"location": "database.ClosePostgres", "section": "db.DB"}).Error(err)
+		return
+	}
+
+	if err := sqlDB.Close(); err != nil {
+		log.Logger.WithFields(logrus.Fields{"location": "database.ClosePostgres", "section": "sqlDB.Close"}).Error(err)
+	}
+}

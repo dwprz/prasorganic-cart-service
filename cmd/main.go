@@ -31,6 +31,7 @@ func main() {
 	handleCloseApp(closeCH)
 
 	postgresDB := database.NewPostgres()
+	defer database.ClosePostgres(postgresDB)
 
 	unaryRequestInterceptor := interceptor.NewUnaryRequest()
 	productGrpcDelivery, productGrpcConn := delivery.NewProductGrpc(unaryRequestInterceptor)
